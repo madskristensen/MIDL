@@ -1,0 +1,58 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32510.385
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MIDL", "src\MIDL\MIDL.csproj", "{91609F6F-9CD8-406D-A10B-B35CBA88CD79}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MIDLParser", "src\MIDLParser\MIDLParser.csproj", "{0CAB4EBB-AA58-4742-8ACF-0852AF458BD9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MIDLParser.Test", "test\MIDLParser.Test\MIDLParser.Test.csproj", "{81A8CD1D-B110-45E9-9488-814FEFF0829D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{693E33DD-04B6-41E2-9D26-C136ECD75CF1}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\build.yaml = .github\workflows\build.yaml
+		.editorconfig = .editorconfig
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{91609F6F-9CD8-406D-A10B-B35CBA88CD79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91609F6F-9CD8-406D-A10B-B35CBA88CD79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91609F6F-9CD8-406D-A10B-B35CBA88CD79}.Debug|x86.ActiveCfg = Debug|x86
+		{91609F6F-9CD8-406D-A10B-B35CBA88CD79}.Debug|x86.Build.0 = Debug|x86
+		{91609F6F-9CD8-406D-A10B-B35CBA88CD79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91609F6F-9CD8-406D-A10B-B35CBA88CD79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91609F6F-9CD8-406D-A10B-B35CBA88CD79}.Release|x86.ActiveCfg = Release|x86
+		{91609F6F-9CD8-406D-A10B-B35CBA88CD79}.Release|x86.Build.0 = Release|x86
+		{0CAB4EBB-AA58-4742-8ACF-0852AF458BD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CAB4EBB-AA58-4742-8ACF-0852AF458BD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CAB4EBB-AA58-4742-8ACF-0852AF458BD9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0CAB4EBB-AA58-4742-8ACF-0852AF458BD9}.Debug|x86.Build.0 = Debug|Any CPU
+		{0CAB4EBB-AA58-4742-8ACF-0852AF458BD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CAB4EBB-AA58-4742-8ACF-0852AF458BD9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0CAB4EBB-AA58-4742-8ACF-0852AF458BD9}.Release|x86.ActiveCfg = Release|Any CPU
+		{0CAB4EBB-AA58-4742-8ACF-0852AF458BD9}.Release|x86.Build.0 = Release|Any CPU
+		{81A8CD1D-B110-45E9-9488-814FEFF0829D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81A8CD1D-B110-45E9-9488-814FEFF0829D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81A8CD1D-B110-45E9-9488-814FEFF0829D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{81A8CD1D-B110-45E9-9488-814FEFF0829D}.Debug|x86.Build.0 = Debug|Any CPU
+		{81A8CD1D-B110-45E9-9488-814FEFF0829D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81A8CD1D-B110-45E9-9488-814FEFF0829D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81A8CD1D-B110-45E9-9488-814FEFF0829D}.Release|x86.ActiveCfg = Release|Any CPU
+		{81A8CD1D-B110-45E9-9488-814FEFF0829D}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {86845323-ED4A-446C-A149-BD4E2AB898F7}
+	EndGlobalSection
+EndGlobal

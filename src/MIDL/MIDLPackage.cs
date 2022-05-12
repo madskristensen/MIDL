@@ -1,0 +1,39 @@
+﻿global using System;
+global using Community.VisualStudio.Toolkit;
+global using Microsoft.VisualStudio.Shell;
+global using Task = System.Threading.Tasks.Task;
+using System.Runtime.InteropServices;
+using System.Threading;
+using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell.Interop;
+
+namespace MIDL
+{
+    [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
+    [InstalledProductRegistration(Vsix.Name, Vsix.Description, Vsix.Version)]
+    [ProvideMenuResource("Menus.ctmenu", 1)]
+    [Guid(PackageGuids.MIDLString)]
+
+    [ProvideLanguageService(typeof(LanguageFactory), LanguageFactory.LanguageName, 0, ShowHotURLs = false, DefaultToNonHotURLs = true)]
+    [ProvideLanguageExtension(typeof(LanguageFactory), LanguageFactory.FileExtension)]
+    [ProvideLanguageEditorOptionPage(typeof(OptionsProvider.GeneralOptions), LanguageFactory.LanguageName, null, "Advanced", null, new[] { "idl", "midl", "webidl" })]
+
+    [ProvideEditorFactory(typeof(LanguageFactory), 341, CommonPhysicalViewAttributes = (int)__VSPHYSICALVIEWATTRIBUTES.PVA_SupportsPreview, TrustLevel = __VSEDITORTRUSTLEVEL.ETL_AlwaysTrusted)]
+    [ProvideEditorExtension(typeof(LanguageFactory), LanguageFactory.FileExtension, 65535, NameResourceID = 341)]
+    [ProvideEditorLogicalView(typeof(LanguageFactory), VSConstants.LOGVIEWID.TextView_string, IsTrusted = true)]
+
+    [ProvideFileIcon(LanguageFactory.FileExtension, "KnownMonikers.WebScript")]
+    public sealed class MIDLPackage : ToolkitPackage
+    {
+        protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
+        {
+            await JoinableTaskFactory.SwitchToMainThreadAsync();
+
+            var language = new LanguageFactory(this);
+            RegisterEditorFactory(language);
+            language.RegisterLanguageService(this);
+
+            await this.RegisterCommandsAsync();
+        }
+    }
+}
