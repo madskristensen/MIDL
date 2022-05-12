@@ -4,6 +4,7 @@
         <Identity Id="MIDL.148cb49f-0d60-482a-a9ca-800f2b6c579b" Version="1.0" Language="en-US" Publisher="Mads Kristensen" />
         <DisplayName>IDL 3 Language Service</DisplayName>
         <Description xml:space="preserve">Provides basic language support for IDL 3, including errors, syntax highlighting, brace completion and more...</Description>
+        <MoreInfo>C:\Users\madsk\GitHub\MIDL</MoreInfo>
         <License>Resources\LICENSE</License>
         <Icon>Resources\Icon.png</Icon>
         <PreviewImage>Resources\Icon.png</PreviewImage>

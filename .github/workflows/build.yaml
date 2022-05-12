@@ -18,7 +18,7 @@ jobs:
     env:
       Configuration: Release
       DeployExtension: False
-      VsixManifestPath: src\source.extension.vsixmanifest
+      VsixManifestPath: src\MIDL\source.extension.vsixmanifest
       VsixManifestSourcePath: src\source.extension.cs
       
     steps:
