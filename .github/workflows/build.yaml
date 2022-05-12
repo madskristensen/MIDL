@@ -19,7 +19,7 @@ jobs:
       Configuration: Release
       DeployExtension: False
       VsixManifestPath: src\MIDL\source.extension.vsixmanifest
-      VsixManifestSourcePath: src\source.extension.cs
+      VsixManifestSourcePath: src\MIDL\source.extension.cs
       
     steps:
     - uses: actions/checkout@v2
