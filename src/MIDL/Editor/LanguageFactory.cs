@@ -34,7 +34,7 @@ namespace MIDL
             preferences.HighlightMatchingBraceFlags = _HighlightMatchingBraceFlags.HMB_USERECTANGLEBRACES;
             preferences.LineNumbers = true;
             preferences.MaxErrorMessages = 100;
-            preferences.AutoOutlining = false;
+            preferences.AutoOutlining = true;
             preferences.MaxRegionTime = 2000;
             preferences.InsertTabs = false;
             preferences.IndentSize = 4;
