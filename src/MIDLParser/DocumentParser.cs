@@ -10,8 +10,8 @@ namespace MIDLParser
         private static readonly Regex _rxComment = new(@"//.+");
         private static readonly Regex _rxString = new(@"\""[^\""].+\""");
         private static readonly Regex _rxAttribute = new(@"(?<=\[)\w+(?=.*\])");
-        private static readonly Regex _rxType = new(@"\b(asm|__asm__|auto|bool|Boolean|_Bool|char|_Complex|double|float|PWSTR|PCWSTR|_Imaginary|int|long|short|VARIANT|BSTR|string|String|Single|Double|Int16|Int32|Int64|UInt16|UInt32|UInt64|Char|Guid|Object)\b|(?<=(namespace|event|enum|runtimeclass)\s*)[\w\.]+");
-        private static readonly Regex _rxKeyword = new(@"^(#include|#define)|\b(true|false|signed|typedef|union|unsigned|void|enum|import|VARIANT|BSTR|break|case|ref|out|const|continue|default|do|else|for|goto|if|_Pragma|return|switch|while|set|get|event|runtimeclass|namespace|interface|delegate|static|unsealed)\b");
+        private static readonly Regex _rxType = new(@"\b(asm|__asm__|auto|bool|Boolean|_Bool|char|_Complex|double|float|PWSTR|PCWSTR|_Imaginary|int|long|short|VARIANT|BSTR|string|String|Single|Double|Int16|Int32|Int64|Uint8|UInt16|UInt32|UInt64|Char|Guid|Object)\b|(?<=(namespace|event|enum|runtimeclass)\s*)[\w\.]+");
+        private static readonly Regex _rxKeyword = new(@"^(#include|#define)|\b(true|false|signed|typedef|union|unsigned|void|enum|import|VARIANT|BSTR|break|case|overridable|ref|out|const|continue|default|do|else|for|goto|if|_Pragma|return|switch|while|set|get|event|runtimeclass|apicontract|namespace|interface|delegate|static|unsealed)\b");
 
 
         public bool IsParsing { get; private set; }
