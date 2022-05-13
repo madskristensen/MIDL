@@ -9,8 +9,9 @@ namespace MIDLParser
     {
         private static readonly Regex _rxComment = new(@"//.+");
         private static readonly Regex _rxString = new(@"\""[^\""].+\""");
+        private static readonly Regex _rxAttribute = new(@"(?<=\[)\w+(?=\])");
         private static readonly Regex _rxType = new(@"\b(asm|__asm__|auto|bool|Boolean|_Bool|char|_Complex|double|float|PWSTR|PCWSTR|_Imaginary|int|long|short|VARIANT|BSTR|string|String|Single|Double|Int16|Int32|Int64|UInt16|UInt32|UInt64|Char|Guid|Object)\b");
-        private static readonly Regex _rxKeyword = new(@"\b(true|false|signed|typedef|union|unsigned|void|VARIANT|BSTR|break|case|continue|default|do|else|for|goto|if|_Pragma|return|switch|while|set|get|event|runtimeclass|namespace|interface|delegate|static|unsealed)\b");
+        private static readonly Regex _rxKeyword = new(@"^(#include|#define)|\b(true|false|signed|typedef|union|unsigned|void|enum|import|VARIANT|BSTR|break|case|continue|default|do|else|for|goto|if|_Pragma|return|switch|while|set|get|event|runtimeclass|namespace|interface|delegate|static|unsealed)\b");
 
 
         public bool IsParsing { get; private set; }
@@ -38,7 +39,7 @@ namespace MIDLParser
                     start += line.Length;
                 }
 
-                Items = tokens;
+                Items = tokens.OrderBy(i => i.Start).ToList();
 
                 ValidateDocument();
 
@@ -66,13 +67,6 @@ namespace MIDLParser
                 lineItems.Add(ToParseItem(matchComment, start, ItemType.Comment)!);
             }
 
-            // Strings
-            if (IsMatches(_rxString, trimmedLine, out MatchCollection? matchStrings))
-            {
-                IEnumerable<ParseItem>? items = ToParseItems(matchStrings, start, ItemType.String)!;
-                AddItem(lineItems, items);
-            }
-
             // Keywords
             if (IsMatches(_rxKeyword, trimmedLine, out MatchCollection? matchVar))
             {
@@ -84,6 +78,20 @@ namespace MIDLParser
             if (IsMatches(_rxType, trimmedLine, out MatchCollection? matchType))
             {
                 IEnumerable<ParseItem>? items = ToParseItems(matchType, start, ItemType.Type)!;
+                AddItem(lineItems, items);
+            }
+
+            // Attributes
+            if (IsMatches(_rxAttribute, trimmedLine, out MatchCollection? matchAttr))
+            {
+                IEnumerable<ParseItem>? items = ToParseItems(matchAttr, start, ItemType.Type)!;
+                AddItem(lineItems, items);
+            }
+
+            // Strings
+            if (IsMatches(_rxString, trimmedLine, out MatchCollection? matchStrings))
+            {
+                IEnumerable<ParseItem>? items = ToParseItems(matchStrings, start, ItemType.String)!;
                 AddItem(lineItems, items);
             }
 

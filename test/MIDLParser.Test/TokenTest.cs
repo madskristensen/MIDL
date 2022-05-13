@@ -8,16 +8,20 @@ namespace MIDLParser.Test
     public class TokenTest
     {
         private const string _file = @"// Photo.idl
+#include ""NamespaceRedirect.h""
+
 namespace PhotoEditor
 {
     delegate void RecognitionHandler(Boolean arg); // delegate type, for an event.
-
+    
+    [default_interface]
+    [webhosthidden]
     runtimeclass Photo : Windows.UI.Xaml.Data.INotifyPropertyChanged // interface.
     {
         Photo(); // constructors.
         Photo(Windows.Storage.StorageFile imageFile);
 
-        String ImageName{ get; }; // read-only property.
+        string ImageName{ get; }; // read-only property.
         Single SepiaIntensity; // read-write property.
 
         Windows.Foundation.IAsyncAction StartRecognitionAsync(); // (asynchronous) method.
@@ -33,7 +37,17 @@ namespace PhotoEditor
             var parser = Document.FromLines(lines);
 
             Assert.AreEqual(ItemType.Comment, parser.Items.First().Type);
-            Assert.AreEqual(17, parser.Items.Count);
+            Assert.AreEqual(ItemType.String, parser.Items.ElementAt(2).Type);
+            Assert.AreEqual(21, parser.Items.Count);
+        }
+
+        [TestMethod]
+        public void ValidationTest()
+        {
+            var lines = _file.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+            var parser = Document.FromLines(lines);
+
+            Assert.AreEqual(1, parser.Items.ElementAt(13).Errors.Count);
         }
     }
 }
