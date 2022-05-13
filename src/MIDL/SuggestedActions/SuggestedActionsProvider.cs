@@ -1,9 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.Imaging;
-using Microsoft.VisualStudio.Imaging.Interop;
+﻿using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
