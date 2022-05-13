@@ -24,13 +24,13 @@ namespace MIDL.Commands
             ITextView view = args.TextView;
             int position = view.Caret.Position.BufferPosition.Position;
 
-            var shouldIndent = ShouldIndent(view, position);
+            bool shouldIndent = ShouldIndent(view, position);
 
             if (shouldIndent)
             {
                 return Indent(view, position);
             }
-            
+
             return false;
         }
 

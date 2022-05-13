@@ -1,0 +1,9 @@
+# EditorConfig is awesome:http://EditorConfig.org
+
+
+# CSharp code style settings:
+[*.cs]
+# Prefer "var" everywhere
+csharp_style_var_for_built_in_types                   =true:error
+csharp_style_var_when_type_is_apparent                =true:error
+csharp_style_var_elsewhere                            =false:error

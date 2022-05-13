@@ -33,7 +33,7 @@ namespace PhotoEditor
             var parser = Document.FromLines(lines);
 
             Assert.AreEqual(ItemType.Comment, parser.Items.First().Type);
-            Assert.AreEqual(16, parser.Items.Count);
+            Assert.AreEqual(17, parser.Items.Count);
         }
     }
 }
