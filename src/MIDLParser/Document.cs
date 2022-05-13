@@ -22,7 +22,7 @@ namespace MIDLParser
 
         public static Document FromLines(params string[] lines)
         {
-            var doc = new Document(lines);
+            Document? doc = new(lines);
             return doc;
         }
 

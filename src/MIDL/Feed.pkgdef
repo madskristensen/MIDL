@@ -1,0 +1,5 @@
+﻿[$RootKey$\ExtensionManager\Repositories\{18007925-b767-4991-917d-8e430149bbcb}]
+@="https://www.vsixgallery.com/feed/extension/MIDL.148cb49f-0d60-482a-a9ca-800f2b6c579b/"
+"Priority"=dword:00000064
+"Protocol"="Atom Feed"
+"DisplayName"="IDL 3 CI Server"

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
 namespace MIDLParser
@@ -10,8 +9,8 @@ namespace MIDLParser
     {
         private static readonly Regex _rxComment = new(@"//.+");
         private static readonly Regex _rxString = new(@"\""[^\""].+\""");
-        private static readonly Regex _rxType = new(@"\b(asm|__asm__|auto|bool|_Bool|char|_Complex|double|float|PWSTR|PCWSTR|_Imaginary|int|long|short|VARIANT|BSTR|string|String|Single|Double|Int16|Int32|Int64|UInt16|UInt32|UInt64|Char|Guid|Object)\b");
-        private static readonly Regex _rxKeyword = new(@"\b(signed|typedef|union|unsigned|void|VARIANT|BSTR|break|case|continue|default|do|else|for|goto|if|_Pragma|return|switch|while|set|get|event|runtimeclass|namespace|interface|delegate|static|unsealed)\b");
+        private static readonly Regex _rxType = new(@"\b(asm|__asm__|auto|bool|Boolean|_Bool|char|_Complex|double|float|PWSTR|PCWSTR|_Imaginary|int|long|short|VARIANT|BSTR|string|String|Single|Double|Int16|Int32|Int64|UInt16|UInt32|UInt64|Char|Guid|Object)\b");
+        private static readonly Regex _rxKeyword = new(@"\b(true|false|signed|typedef|union|unsigned|void|VARIANT|BSTR|break|case|continue|default|do|else|for|goto|if|_Pragma|return|switch|while|set|get|event|runtimeclass|namespace|interface|delegate|static|unsealed)\b");
 
 
         public bool IsParsing { get; private set; }
@@ -20,14 +19,14 @@ namespace MIDLParser
         public void Parse()
         {
             IsParsing = true;
-            var isSuccess = false;
-            var start = 0;
+            bool isSuccess = false;
+            int start = 0;
 
             try
             {
                 List<ParseItem> tokens = new();
 
-                foreach (var line in _lines)
+                foreach (string? line in _lines)
                 {
                     IEnumerable<ParseItem>? current = ParseLine(start, line);
 
@@ -58,7 +57,7 @@ namespace MIDLParser
 
         private IEnumerable<ParseItem> ParseLine(int start, string line)
         {
-            var trimmedLine = line.TrimEnd();
+            string? trimmedLine = line.TrimEnd();
             List<ParseItem> lineItems = new();
 
             // Comment
@@ -116,7 +115,7 @@ namespace MIDLParser
 
         private ParseItem ToParseItem(string line, int start, ItemType type)
         {
-            var item = new ParseItem(start, line, this, type);
+            ParseItem? item = new(start, line, this, type);
 
 
             return item;
@@ -158,7 +157,7 @@ namespace MIDLParser
             }
         }
 
-        private Dictionary<string, string> _convertTypes = new()
+        private readonly Dictionary<string, string> _convertTypes = new()
         {
             {"int", "Int32"},
             {"short", "Int16"},

@@ -45,6 +45,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Commands\SmartIndent.cs" />
     <Compile Include="Editor\EditorFeatures.cs" />
     <Compile Include="Editor\LanguageFactory.cs" />
     <Compile Include="Editor\TokenTagger.cs" />
@@ -75,6 +76,9 @@
       <Generator>VsixManifestGenerator</Generator>
       <LastGenOutput>source.extension.cs</LastGenOutput>
     </None>
+    <Content Include="Feed.pkgdef">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="Resources\Icon.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>

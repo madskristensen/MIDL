@@ -65,11 +65,11 @@ namespace MIDL
         private void AddTagToList(List<ITagSpan<TokenTag>> list, ParseItem item)
         {
             //var supportsOutlining = item is Request request && (request.Headers.Any() || request.Body != null);
-            var hasTooltip = !item.IsValid;
+            bool hasTooltip = !item.IsValid;
             IEnumerable<ErrorListItem> errors = CreateErrorListItem(item);
             TokenTag tag = CreateToken(item.Type, hasTooltip, false, errors);
 
-            var span = new SnapshotSpan(Buffer.CurrentSnapshot, item.ToSpan());
+            SnapshotSpan span = new(Buffer.CurrentSnapshot, item.ToSpan());
             list.Add(new TagSpan<TokenTag>(span, tag));
         }
 
@@ -121,7 +121,7 @@ namespace MIDL
             // Error messages
             if (item?.IsValid == false)
             {
-                var elm = new ContainerElement(
+                ContainerElement elm = new(
                     ContainerElementStyle.Wrapped,
                     new ImageElement(_errorIcon),
                     string.Join(Environment.NewLine, item.Errors.Select(e => e.Message)));

@@ -14,7 +14,7 @@ namespace MIDL
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [Guid(PackageGuids.MIDLString)]
 
-    [ProvideLanguageService(typeof(LanguageFactory), LanguageFactory.LanguageName, 0, ShowHotURLs = false, DefaultToNonHotURLs = true)]
+    [ProvideLanguageService(typeof(LanguageFactory), LanguageFactory.LanguageName, 0, ShowSmartIndent = true, DefaultToInsertSpaces = true)]
     [ProvideLanguageExtension(typeof(LanguageFactory), LanguageFactory.FileExtension)]
     [ProvideLanguageEditorOptionPage(typeof(OptionsProvider.GeneralOptions), LanguageFactory.LanguageName, null, "Advanced", null, new[] { "idl", "midl", "webidl" })]
 
@@ -29,7 +29,7 @@ namespace MIDL
         {
             await JoinableTaskFactory.SwitchToMainThreadAsync();
 
-            var language = new LanguageFactory(this);
+            LanguageFactory language = new(this);
             RegisterEditorFactory(language);
             language.RegisterLanguageService(this);
 

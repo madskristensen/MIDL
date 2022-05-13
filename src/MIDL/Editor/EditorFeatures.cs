@@ -1,13 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using Microsoft.VisualStudio.Imaging;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion;
 using Microsoft.VisualStudio.Language.StandardClassification;
-using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.BraceCompletion;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
@@ -15,7 +10,7 @@ using Microsoft.VisualStudio.Utilities;
 using MIDLParser;
 
 namespace MIDL
-{    
+{
     [Export(typeof(ITaggerProvider))]
     [TagType(typeof(IClassificationTag))]
     [ContentType(LanguageFactory.LanguageName)]
@@ -80,22 +75,22 @@ namespace MIDL
     public class SameWordHighlighter : SameWordHighlighterBase
     { }
 
-    //[Export(typeof(IWpfTextViewCreationListener))]
-    //[ContentType(LanguageFactory.LanguageName)]
-    //[TextViewRole(PredefinedTextViewRoles.PrimaryDocument)]
-    //public class UserRating : WpfTextViewCreationListener
-    //{
-    //    private readonly RatingPrompt _rating = new(Constants.MarketplaceId, Vsix.Name, General.Instance);
-    //    private readonly DateTime _openedDate = DateTime.Now;
+    [Export(typeof(IWpfTextViewCreationListener))]
+    [ContentType(LanguageFactory.LanguageName)]
+    [TextViewRole(PredefinedTextViewRoles.PrimaryDocument)]
+    public class UserRating : WpfTextViewCreationListener
+    {
+        private readonly RatingPrompt _rating = new("MadsKristensen.MIDL", Vsix.Name, General.Instance);
+        private readonly DateTime _openedDate = DateTime.Now;
 
-    //    protected override void Closed(IWpfTextView textView)
-    //    {
-    //        if (_openedDate.AddMinutes(2) < DateTime.Now)
-    //        {
-    //            // Only register use after the document was open for more than 2 minutes.
-    //            _rating.RegisterSuccessfulUsage();
+        protected override void Closed(IWpfTextView textView)
+        {
+            if (_openedDate.AddMinutes(2) < DateTime.Now)
+            {
+                // Only register use after the document was open for more than 2 minutes.
+                _rating.RegisterSuccessfulUsage();
 
-    //        }
-    //    }
-    //}
+            }
+        }
+    }
 }

@@ -37,9 +37,9 @@ namespace MIDL
             preferences.AutoOutlining = false;
             preferences.MaxRegionTime = 2000;
             preferences.InsertTabs = false;
-            preferences.IndentSize = 2;
+            preferences.IndentSize = 4;
             preferences.IndentStyle = IndentingStyle.Smart;
-            preferences.ShowNavigationBar = true;
+            preferences.ShowNavigationBar = false;
 
             preferences.WordWrap = false;
             preferences.WordWrapGlyphs = true;

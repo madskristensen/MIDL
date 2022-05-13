@@ -44,7 +44,7 @@ namespace MIDLParser
         {
             get
             {
-                var index = Document.Items.IndexOf(this);
+                int index = Document.Items.IndexOf(this);
                 return index > 0 ? Document.Items[index - 1] : null;
             }
         }
@@ -53,7 +53,7 @@ namespace MIDLParser
         {
             get
             {
-                var index = Document.Items.IndexOf(this);
+                int index = Document.Items.IndexOf(this);
                 return Document.Items.ElementAtOrDefault(index + 1);
             }
         }
