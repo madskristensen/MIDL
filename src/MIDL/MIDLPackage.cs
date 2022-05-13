@@ -22,7 +22,7 @@ namespace MIDL
     [ProvideEditorExtension(typeof(LanguageFactory), LanguageFactory.FileExtension, 65535, NameResourceID = 341)]
     [ProvideEditorLogicalView(typeof(LanguageFactory), VSConstants.LOGVIEWID.TextView_string, IsTrusted = true)]
 
-    [ProvideFileIcon(LanguageFactory.FileExtension, "KnownMonikers.WebScript")]
+    [ProvideFileIcon(LanguageFactory.FileExtension, "KnownMonikers.InterfaceFile")]
     public sealed class MIDLPackage : ToolkitPackage
     {
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)

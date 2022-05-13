@@ -14,7 +14,7 @@ namespace PhotoEditor
 {
     delegate void RecognitionHandler(Boolean arg); // delegate type, for an event.
     
-    [default_interface]
+    [default_interface(""http://foo.com"")]
     [webhosthidden]
     runtimeclass Photo : Windows.UI.Xaml.Data.INotifyPropertyChanged // interface.
     {
@@ -38,7 +38,7 @@ namespace PhotoEditor
 
             Assert.AreEqual(ItemType.Comment, parser.Items.First().Type);
             Assert.AreEqual(ItemType.String, parser.Items.ElementAt(2).Type);
-            Assert.AreEqual(21, parser.Items.Count);
+            Assert.AreEqual(25, parser.Items.Count);
         }
 
         [TestMethod]
@@ -47,7 +47,7 @@ namespace PhotoEditor
             var lines = _file.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
             var parser = Document.FromLines(lines);
 
-            Assert.AreEqual(1, parser.Items.ElementAt(13).Errors.Count);
+            Assert.AreEqual(1, parser.Items.ElementAt(16).Errors.Count);
         }
     }
 }
