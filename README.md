@@ -1,4 +1,4 @@
-[marketplace]: https://marketplace.visualstudio.com/items?itemName=MadsKristensen.midl
+[marketplace]: https://marketplace.visualstudio.com/items?itemName=MadsKristensen.MIDL
 [vsixgallery]: http://vsixgallery.com/extension/MIDL.148cb49f-0d60-482a-a9ca-800f2b6c579b/
 [repo]:https://github.com/madskristensen/MIDL
 
@@ -13,7 +13,7 @@ or get the [CI build][vsixgallery].
 
 Provides basic language support for IDL 3, including errors, syntax highlighting, brace completion and more...
 
-Description coming soon...
+![Suggested Actions](art/suggested-actions.gif)
 
 ## How can I help?
 If you enjoy using the extension, please give it a ★★★★★ rating on the [Visual Studio Marketplace][marketplace].

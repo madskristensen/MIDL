@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json.schemastore.org/vsix-publish",
+  "categories": [ "programming languages"],
+  "identity": {
+    "internalName": "MIDL",
+    "tags": [ "idl", "webidl", "midl" ]
+  },
+  "assetFiles": [
+    {
+      "pathOnDisk": "art/suggested-actions.gif",
+      "targetPath": "art/suggested-actions.gif"
+    }
+  ],
+  "overview": "README.md",
+  "publisher": "MadsKristensen",
+  "repo": "https://github.com/MadsKristensen/MIDL"
+}
