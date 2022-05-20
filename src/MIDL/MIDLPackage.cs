@@ -23,6 +23,13 @@ namespace MIDL
     [ProvideEditorLogicalView(typeof(LanguageFactory), VSConstants.LOGVIEWID.TextView_string, IsTrusted = true)]
 
     [ProvideFileIcon(LanguageFactory.FileExtension, "KnownMonikers.InterfaceFile")]
+
+    [ProvideAutoLoad(PackageGuids.IdlFileSelectedString, PackageAutoLoadFlags.BackgroundLoad)]
+    [ProvideUIContextRule(PackageGuids.IdlFileSelectedString,
+    name: "IDL file selected",
+    expression: "idl",
+    termNames: new[] { "idl" },
+    termValues: new[] { "HierSingleSelectionName:.idl$" })]
     public sealed class MIDLPackage : ToolkitPackage
     {
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)

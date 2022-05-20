@@ -12,6 +12,9 @@ namespace MIDL
     /// </summary>
     internal sealed partial class PackageGuids
     {
+        public const string IdlFileSelectedString = "3af3801b-be4e-45a6-83c2-71ae3581a399";
+        public static Guid IdlFileSelected = new Guid(IdlFileSelectedString);
+
         public const string MidlEditorFactoryString = "f7d6e464-2c5c-4e02-bc1b-8fe2cde367a3";
         public static Guid MidlEditorFactory = new Guid(MidlEditorFactoryString);
 

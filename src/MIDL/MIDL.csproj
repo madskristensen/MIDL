@@ -52,7 +52,7 @@
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Options\General.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Commands\MyCommand.cs" />
+    <Compile Include="Commands\UpdateHeaderFile.cs" />
     <Compile Include="MIDLPackage.cs" />
     <Compile Include="IdlDocument.cs" />
     <Compile Include="source.extension.cs">
