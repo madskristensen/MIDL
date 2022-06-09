@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.IO;
+using static Community.VisualStudio.Toolkit.Windows;
 
 namespace MIDL
 {
@@ -14,26 +15,49 @@ namespace MIDL
 
         protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)
         {
-            string ideDir = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
-            string teamDir = Path.Combine(ideDir, "CommonExtensions\\Microsoft\\TeamFoundation\\Team Explorer");
+            await VS.StatusBar.ShowProgressAsync("Generating header file...", 1, 3);
 
-            PhysicalFile idlFile = await VS.Solutions.GetActiveItemAsync() as PhysicalFile;
-            string projectFile = Path.ChangeExtension(idlFile.FullPath, ".h");
-            string generatedFile = GenerateNewHeaderFile(idlFile.FullPath);
-
-            // First time header is generated
-            if (!File.Exists(projectFile))
+            try
             {
-                await CreateHeaderFileAsync(projectFile, generatedFile);
-                await VS.Documents.OpenViaProjectAsync(projectFile);
-                await VS.StatusBar.ShowMessageAsync("Header file created from IDL");
+                PhysicalFile idlFile = await VS.Solutions.GetActiveItemAsync() as PhysicalFile;
+                ProcessResult result = idlFile.TransformToHeader();
+
+                if (!result.Success)
+                {
+                    await VS.StatusBar.ShowProgressAsync("Error generating header file", 2, 2);
+
+                    OutputWindowPane output = await VS.Windows.GetOutputWindowPaneAsync(VSOutputWindowPane.General);
+                    await output.WriteLineAsync(result.Output);
+                    await output.ActivateAsync();
+
+                    return;
+                }
+
+                string headerFile = Path.ChangeExtension(idlFile.FullPath, ".h");
+
+                // First time header is generated
+                if (!File.Exists(headerFile))
+                {
+                    await CreateHeaderFileAsync(headerFile, result.HeaderFile);
+                    await VS.Documents.OpenViaProjectAsync(headerFile);
+                    await VS.StatusBar.ShowProgressAsync("Header file created from IDL", 2, 2);
+                }
+
+                // Subsequent generations
+                else
+                {
+                    await VS.StatusBar.ShowProgressAsync("Preparing header file merge...", 2, 3);
+
+                    string ideDir = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
+                    string teamDir = Path.Combine(ideDir, "CommonExtensions\\Microsoft\\TeamFoundation\\Team Explorer");
+
+                    MergeHeaderFiles(teamDir, headerFile, result.HeaderFile);
+                }
             }
-
-            // Subsequent generations
-            else
+            finally
             {
-                await VS.StatusBar.ShowMessageAsync("Preparing header file merge...");
-                MergeHeaderFiles(teamDir, projectFile, generatedFile);
+                await Task.Delay(2000);
+                await VS.StatusBar.ShowProgressAsync("Ready", 0, 0);
                 await VS.StatusBar.ClearAsync();
             }
         }
@@ -59,12 +83,6 @@ namespace MIDL
             };
 
             Process.Start(start);
-        }
-
-        private string GenerateNewHeaderFile(string idlFile)
-        {
-            // TODO: generate file based on Alexander's .cvproj file
-            return idlFile;
         }
     }
 }
