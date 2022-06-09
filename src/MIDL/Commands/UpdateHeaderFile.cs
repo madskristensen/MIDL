@@ -57,7 +57,7 @@ namespace MIDL
             finally
             {
                 await Task.Delay(2000);
-                await VS.StatusBar.ShowProgressAsync("Ready", 0, 0);
+                await VS.StatusBar.ShowProgressAsync("Ready", 1, 1);
                 await VS.StatusBar.ClearAsync();
             }
         }

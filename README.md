@@ -15,6 +15,19 @@ Provides basic language support for IDL 3, including errors, syntax highlighting
 
 ![Suggested Actions](art/suggested-actions.gif)
 
+## Update header (.h) file
+Right-click any .idl file to invoke the *Update Header File...* command.
+
+![Context Menu](art/context-menu.png)
+
+Doing that will result in the generation of a WinMD file followed by header file generation by using **cppwinrt**. All of this takes place in a temp folder, so no artifacts will be added to your project.
+
+Once the generation is done, a merge window pops up to let you merge the updates you need into your .h file.
+
+![Merge](art/merge.png)
+
+Click **Accept Merge** in the upper-left corner moves the changes you selected into the .h file in your project.
+
 ## How can I help?
 If you enjoy using the extension, please give it a ★★★★★ rating on the [Visual Studio Marketplace][marketplace].
 

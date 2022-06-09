@@ -3,8 +3,8 @@
     <Metadata>
         <Identity Id="MIDL.148cb49f-0d60-482a-a9ca-800f2b6c579b" Version="1.0.999" Language="en-US" Publisher="Mads Kristensen" />
         <DisplayName>IDL 3 Language Service</DisplayName>
-        <Description xml:space="preserve">Provides basic language support for IDL 3, including errors, syntax highlighting, brace completion and more...</Description>
-        <MoreInfo>C:\Users\madsk\GitHub\MIDL</MoreInfo>
+        <Description xml:space="preserve">Provides language support for IDL 3 and header generation based on WinMD transformations.</Description>
+        <MoreInfo>https://github.com/madskristensen/MIDL</MoreInfo>
         <License>Resources\LICENSE</License>
         <Icon>Resources\Icon.png</Icon>
         <PreviewImage>Resources\Icon.png</PreviewImage>
@@ -18,6 +18,7 @@
     </Installation>
     <Prerequisites>
         <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[17.0,)" DisplayName="Visual Studio core editor" />
+        <Prerequisite Id="Microsoft.VisualStudio.ComponentGroup.UWP.Support" Version="[17.0,)" DisplayName="Universal Windows Platform tools" />
     </Prerequisites>
     <Assets>
         <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
