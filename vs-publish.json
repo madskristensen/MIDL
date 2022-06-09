@@ -9,6 +9,14 @@
     {
       "pathOnDisk": "art/suggested-actions.gif",
       "targetPath": "art/suggested-actions.gif"
+    },
+    {
+      "pathOnDisk": "art/context-menu.png",
+      "targetPath": "art/context-menu.png"
+    },
+    {
+      "pathOnDisk": "art/merge.png",
+      "targetPath": "art/merge.png"
     }
   ],
   "overview": "README.md",
