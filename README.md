@@ -2,7 +2,7 @@
 [vsixgallery]: http://vsixgallery.com/extension/MIDL.148cb49f-0d60-482a-a9ca-800f2b6c579b/
 [repo]:https://github.com/madskristensen/MIDL
 
-# IDL 3 Language Service for Visual Studio
+# WinRT Tools for C++
 
 [![Build](https://github.com/madskristensen/MIDL/actions/workflows/build.yaml/badge.svg)](https://github.com/madskristensen/MIDL/actions/workflows/build.yaml)
 
@@ -11,7 +11,7 @@ or get the [CI build][vsixgallery].
 
 --------------------------------------
 
-Provides basic language support for IDL 3, including errors, syntax highlighting, brace completion and more...
+Provides language support for IDL 3 and header generation based on WinMD transformations.
 
 ![Suggested Actions](art/suggested-actions.gif)
 

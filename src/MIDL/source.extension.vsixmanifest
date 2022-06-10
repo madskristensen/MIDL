@@ -2,7 +2,7 @@
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
         <Identity Id="MIDL.148cb49f-0d60-482a-a9ca-800f2b6c579b" Version="1.0.999" Language="en-US" Publisher="Mads Kristensen" />
-        <DisplayName>IDL 3 Language Service</DisplayName>
+        <DisplayName>WinRT Tools for C++</DisplayName>
         <Description xml:space="preserve">Provides language support for IDL 3 and header generation based on WinMD transformations.</Description>
         <MoreInfo>https://github.com/madskristensen/MIDL</MoreInfo>
         <License>Resources\LICENSE</License>

@@ -8,7 +8,7 @@ namespace MIDL
     internal sealed partial class Vsix
     {
         public const string Id = "MIDL.148cb49f-0d60-482a-a9ca-800f2b6c579b";
-        public const string Name = "IDL 3 Language Service";
+        public const string Name = "WinRT Tools for C++";
         public const string Description = @"Provides language support for IDL 3 and header generation based on WinMD transformations.";
         public const string Language = "en-US";
         public const string Version = "1.0.999";
