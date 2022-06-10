@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.IO;
+using Microsoft.Build.Execution;
 using static Community.VisualStudio.Toolkit.Windows;
 
 namespace MIDL
@@ -15,6 +16,12 @@ namespace MIDL
 
         protected override async Task ExecuteAsync(OleMenuCmdEventArgs e)
         {
+            if (VsShellUtilities.IsSolutionBuilding(Package))
+            {
+                await VS.MessageBox.ShowAsync("Header files can't be updated while a build is in progress");
+                return;
+            }
+            
             await VS.StatusBar.ShowProgressAsync("Generating header file...", 1, 3);
 
             try
@@ -53,6 +60,10 @@ namespace MIDL
 
                     MergeHeaderFiles(teamDir, headerFile, result.HeaderFile);
                 }
+            }
+            catch (Exception ex)
+            {
+                await ex.LogAsync();
             }
             finally
             {

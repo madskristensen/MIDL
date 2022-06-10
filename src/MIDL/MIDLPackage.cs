@@ -27,9 +27,9 @@ namespace MIDL
     [ProvideAutoLoad(PackageGuids.IdlFileSelectedString, PackageAutoLoadFlags.BackgroundLoad)]
     [ProvideUIContextRule(PackageGuids.IdlFileSelectedString,
     name: "IDL file selected",
-    expression: "idl",
-    termNames: new[] { "idl" },
-    termValues: new[] { "HierSingleSelectionName:.idl$" })]
+    expression: "idl & building",
+    termNames: new[] { "idl", "building" },
+    termValues: new[] { "HierSingleSelectionName:.idl$", VSConstants.UICONTEXT.NotBuildingAndNotDebugging_string })]
     public sealed class MIDLPackage : ToolkitPackage
     {
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)

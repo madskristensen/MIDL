@@ -34,20 +34,24 @@ namespace MIDL
         private static ProcessResult ExecuteBuild(Project project, string idlFileName)
         {
             string outputPath = Path.Combine(Path.GetTempPath(), $"VSIXIDL\\{project.Name}\\VSIX_Metadata_Folder\\Generated Files\\sources");
+            string headerFileName = Path.ChangeExtension(Path.GetFileName(idlFileName), ".h");
+            string headerFile = Path.Combine(outputPath, $"{headerFileName}");
 
-            if (Directory.Exists(outputPath))
+            try
             {
-                Directory.Delete(outputPath, true);
-            }
+                if (Directory.Exists(outputPath))
+                {
+                    Directory.Delete(outputPath, true);
+                }
 
-            string projectName = Path.GetFileName(project.FullPath);
-            string projectDir = Path.GetDirectoryName(project.FullPath);
-            string relativeIdlFileName = PackageUtilities.MakeRelative(projectDir, idlFileName);
+                string projectName = Path.GetFileName(project.FullPath);
+                string projectDir = Path.GetDirectoryName(project.FullPath);
+                string relativeIdlFileName = PackageUtilities.MakeRelative(projectDir, idlFileName);
 
-            BuildManager manager = BuildManager.DefaultBuildManager;
-            ProjectCollection projectCollection = new();
-            BuildParameters buildParamters = new(projectCollection);
-            Dictionary<string, string> globalProperty = new()
+                BuildManager manager = BuildManager.DefaultBuildManager;
+                ProjectCollection projectCollection = new();
+                BuildParameters buildParamters = new(projectCollection);
+                Dictionary<string, string> globalProperty = new()
             {
                 { "ProjectPath", projectName },
                 { "IDLFile", relativeIdlFileName },
@@ -55,22 +59,24 @@ namespace MIDL
                 { "Platform", "x64" },
             };
 
-            string buildProjectPath = Path.Combine(projectDir, _buildFileName);
-            BuildRequestData buildRequest = new(buildProjectPath, globalProperty, null, new string[] { "SpecialVSIXMidl" }, null);
+                string buildProjectPath = Path.Combine(projectDir, _buildFileName);
+                BuildRequestData buildRequest = new(buildProjectPath, globalProperty, null, new string[] { "SpecialVSIXMidl" }, null);
 
-            BuildResult result = manager.Build(buildParamters, buildRequest);
+                BuildResult result = manager.Build(buildParamters, buildRequest);
 
-            string headerFileName = Path.ChangeExtension(Path.GetFileName(idlFileName), ".h");
-            string headerFile = Path.Combine(outputPath, $"{headerFileName}");
+                if (!File.Exists(headerFile))
+                {
+                    return new ProcessResult(false, headerFile, null);
+                }
 
-            if (!File.Exists(headerFile))
-            {
-                return new ProcessResult(false, headerFile, null);
+                RemoveNoise(project, headerFile);
+
+                return new ProcessResult(result.Exception == null, headerFile, result.Exception?.ToString());
             }
-
-            RemoveNoise(project, headerFile);
-
-            return new ProcessResult(result.Exception == null, headerFile, result.Exception?.ToString());
+            catch (Exception ex)
+            {
+                return new ProcessResult(false, headerFile, ex.ToString());
+            }
         }
 
         private static void RemoveNoise(Project project, string headerFile)
