@@ -27,16 +27,20 @@ namespace MIDL
             try
             {
                 PhysicalFile idlFile = await VS.Solutions.GetActiveItemAsync() as PhysicalFile;
-                ProcessResult result = idlFile.TransformToHeader();
+                ProcessResult result = await idlFile.TransformToHeaderAsync();
 
                 if (!result.Success)
                 {
-                    await VS.StatusBar.ShowProgressAsync("Error generating header file", 2, 2);
+                    await VS.StatusBar.ShowProgressAsync("", 2, 2);
+                    await VS.StatusBar.ShowMessageAsync("Error generating header file. Make sure the project builds");
 
-                    OutputWindowPane output = await VS.Windows.GetOutputWindowPaneAsync(VSOutputWindowPane.General);
-                    await output.WriteLineAsync(result.Output);
-                    await output.ActivateAsync();
-
+                    if (!string.IsNullOrEmpty(result.Output))
+                    {
+                        OutputWindowPane output = await VS.Windows.GetOutputWindowPaneAsync(VSOutputWindowPane.General);
+                        await output.WriteLineAsync(result.Output);
+                        await output.ActivateAsync();
+                    }
+                    
                     return;
                 }
 
@@ -60,16 +64,14 @@ namespace MIDL
 
                     MergeHeaderFiles(teamDir, headerFile, result.HeaderFile);
                 }
+
+                await Task.Delay(2000);
+                await VS.StatusBar.ShowProgressAsync("Ready", 1, 1);
+                await VS.StatusBar.ClearAsync();
             }
             catch (Exception ex)
             {
                 await ex.LogAsync();
-            }
-            finally
-            {
-                await Task.Delay(2000);
-                await VS.StatusBar.ShowProgressAsync("Ready", 1, 1);
-                await VS.StatusBar.ClearAsync();
             }
         }
 

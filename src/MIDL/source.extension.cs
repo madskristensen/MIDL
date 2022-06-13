@@ -11,7 +11,7 @@ namespace MIDL
         public const string Name = "WinRT Tools for C++";
         public const string Description = @"Provides language support for IDL 3 and header generation based on WinMD transformations.";
         public const string Language = "en-US";
-        public const string Version = "1.0.999";
+        public const string Version = "1.0.9991";
         public const string Author = "Mads Kristensen";
         public const string Tags = "idl, midl";
     }
