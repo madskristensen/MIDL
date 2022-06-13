@@ -89,8 +89,6 @@ namespace MIDL
 
         private static async Task MergeHeaderFilesAsync(string projectFile, string generatedFile)
         {
-
-
             string baseFile = Path.GetTempFileName();
             StripDiff(baseFile, projectFile, generatedFile);
 
@@ -107,25 +105,12 @@ namespace MIDL
                                                         resultFileTag: "Result",
                                                         leftFileTitle: Path.GetFileName(projectFile),
                                                         rightFileTitle: "from IDL",
-                                                        baseFileTitle: "Base",
+                                                        baseFileTitle: baseFile,
                                                         resultFileTitle: Path.GetFileName(projectFile),
                                                         callbackParam: null,
                                                         onMergeComplete: null);
 
             File.Delete(baseFile);
-
-            //string args = $"\"{projectFile}\" \"{generatedFile}\" \"{projectFile}\" \"{projectFile}\" /m /ignorespace";
-
-            //ProcessStartInfo start = new()
-            //{
-            //    FileName = "vsdiffmerge.exe",
-            //    Arguments = args,
-            //    WorkingDirectory = teamDir,
-            //    CreateNoWindow = true,
-            //    WindowStyle = ProcessWindowStyle.Hidden
-            //};
-
-            //Process.Start(start);
         }
 
         private static async Task<IModernMergeService> GetMergeServiceAsync()
