@@ -1,6 +1,9 @@
 ﻿using System.Diagnostics;
 using System.IO;
-using Microsoft.Build.Execution;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.VisualStudio.Merge.VsPackage;
+using Microsoft.VisualStudio.Shell.Interop;
 using static Community.VisualStudio.Toolkit.Windows;
 
 namespace MIDL
@@ -21,7 +24,7 @@ namespace MIDL
                 await VS.MessageBox.ShowAsync("Header files can't be updated while a build is in progress");
                 return;
             }
-            
+
             await VS.StatusBar.ShowProgressAsync("Generating header file...", 1, 3);
 
             try
@@ -40,7 +43,7 @@ namespace MIDL
                         await output.WriteLineAsync(result.Output);
                         await output.ActivateAsync();
                     }
-                    
+
                     return;
                 }
 
@@ -62,7 +65,7 @@ namespace MIDL
                     string ideDir = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
                     string teamDir = Path.Combine(ideDir, "CommonExtensions\\Microsoft\\TeamFoundation\\Team Explorer");
 
-                    MergeHeaderFiles(teamDir, headerFile, result.HeaderFile);
+                    await MergeHeaderFilesAsync(headerFile, result.HeaderFile);
                 }
 
                 await Task.Delay(2000);
@@ -71,6 +74,7 @@ namespace MIDL
             }
             catch (Exception ex)
             {
+                await VS.StatusBar.ShowMessageAsync("Error generating header file. See output window for details");
                 await ex.LogAsync();
             }
         }
@@ -80,22 +84,68 @@ namespace MIDL
             File.Copy(generatedFile, fileName, false);
             Project project = await VS.Solutions.GetActiveProjectAsync();
             await project.AddExistingFilesAsync(fileName);
+
         }
 
-        private static void MergeHeaderFiles(string teamDir, string projectFile, string generatedFile)
+        private static async Task MergeHeaderFilesAsync(string projectFile, string generatedFile)
         {
-            string args = $"\"{projectFile}\" \"{generatedFile}\" \"{projectFile}\" \"{projectFile}\" /m";
 
-            ProcessStartInfo start = new()
-            {
-                FileName = "vsdiffmerge.exe",
-                Arguments = args,
-                WorkingDirectory = teamDir,
-                CreateNoWindow = true,
-                WindowStyle = ProcessWindowStyle.Hidden
-            };
 
-            Process.Start(start);
+            string baseFile = Path.GetTempFileName();
+            StripDiff(baseFile, projectFile, generatedFile);
+
+            IModernMergeService mergeService = await GetMergeServiceAsync();
+
+            mergeService.OpenAndRegisterMergeWindow(fileName: "IDL Merge",
+                                                        leftFilePath: projectFile,
+                                                        rightFilePath: generatedFile,
+                                                        baseFilePath: baseFile,
+                                                        resultFilePath: projectFile,
+                                                        leftFileTag: "Local",
+                                                        rightFileTag: "Generated",
+                                                        baseFileTag: "Base file",
+                                                        resultFileTag: "Result",
+                                                        leftFileTitle: Path.GetFileName(projectFile),
+                                                        rightFileTitle: "from IDL",
+                                                        baseFileTitle: "Base",
+                                                        resultFileTitle: Path.GetFileName(projectFile),
+                                                        callbackParam: null,
+                                                        onMergeComplete: null);
+
+            File.Delete(baseFile);
+
+            //string args = $"\"{projectFile}\" \"{generatedFile}\" \"{projectFile}\" \"{projectFile}\" /m /ignorespace";
+
+            //ProcessStartInfo start = new()
+            //{
+            //    FileName = "vsdiffmerge.exe",
+            //    Arguments = args,
+            //    WorkingDirectory = teamDir,
+            //    CreateNoWindow = true,
+            //    WindowStyle = ProcessWindowStyle.Hidden
+            //};
+
+            //Process.Start(start);
+        }
+
+        private static async Task<IModernMergeService> GetMergeServiceAsync()
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+            IVsShell shell = await VS.Services.GetShellAsync();
+            Guid mergePackageId = new("BF0F8831-2CA2-4057-B64E-FF1CED3CEFA2");
+            shell.LoadPackage(ref mergePackageId, out _);
+            IModernMergeService mergeService = await VS.GetServiceAsync<SModernMergeService, IModernMergeService>();
+
+            return mergeService;
+        }
+
+        private static void StripDiff(string resultFileName, string file1, string file2)
+        {
+            string[] lines1 = File.ReadAllLines(file1);
+            string[] lines2 = File.ReadAllLines(file2);
+
+            File.WriteAllLines(resultFileName, lines2.Intersect(lines1));
         }
     }
 }

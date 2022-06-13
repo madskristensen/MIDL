@@ -95,6 +95,9 @@
     </VSCTCompile>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.VisualStudio.Merge">
+      <HintPath>..\..\lib\Microsoft.VisualStudio.Merge.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Design" />
     <Reference Include="System.ComponentModel.Composition" />
