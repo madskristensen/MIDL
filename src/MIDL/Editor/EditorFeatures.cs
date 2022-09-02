@@ -85,7 +85,7 @@ namespace MIDL
 
         protected override void Closed(IWpfTextView textView)
         {
-            if (_openedDate.AddMinutes(2) < DateTime.Now)
+            if (_openedDate.AddMinutes(1) < DateTime.Now)
             {
                 // Only register use after the document was open for more than 2 minutes.
                 _rating.RegisterSuccessfulUsage();
