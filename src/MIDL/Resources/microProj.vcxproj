@@ -53,6 +53,12 @@
       <MidlTrackedOutputFilesToIgnore Include="@(MidlNoDependencies)" />
     </ItemGroup>
 
+    <Message Text="Midl before: @(Midl)" Importance="High"/>
+    <ItemGroup>
+      <Midl Remove="**/*.*" Condition="!$([System.Text.RegularExpressions.Regex]::IsMatch('%(Identity)', `Generated Files`)) And '%(Identity)' != '$(IDLFile)'"/>
+    </ItemGroup>
+    <Message Text="Midl after: @(Midl)" Importance="High"/>
+    
     <MultiToolTask
       Condition                           ="'%(Midl.ExcludedFromBuild)'!='true' and '$(MultiProcMIDL)' == 'true'"
       TaskName                            ="Microsoft.Build.CPPTasks.MIDL"
@@ -75,73 +81,6 @@
       SchedulerName                       ="$(MultiProcSchedulerName)"
     >
     </MultiToolTask>
-
-    <MIDL
-      Condition                           ="'%(Midl.ExcludedFromBuild)'!='true' and '$(MultiProcMIDL)' != 'true'"
-      Source                              ="%(Midl.Identity)"
-
-      AdditionalIncludeDirectories        ="%(Midl.AdditionalIncludeDirectories)"
-      AdditionalMetadataDirectories       ="%(Midl.AdditionalMetadataDirectories)"
-      AdditionalOptions                   ="%(Midl.AdditionalOptions)"
-      ApplicationConfigurationMode        ="%(Midl.ApplicationConfigurationMode)"
-      ClientStubFile                      ="%(Midl.ClientStubFile)"
-      CPreprocessOptions                  ="%(Midl.CPreprocessOptions)"
-      DefaultCharType                     ="%(Midl.DefaultCharType)"
-      DllDataFileName                     ="%(Midl.DllDataFileName)"
-      EnableErrorChecks                   ="%(Midl.EnableErrorChecks)"
-      EnableWindowsRuntime                ="%(Midl.EnableWindowsRuntime)"
-      Enumclass                           ="%(Midl.Enumclass)"
-      ErrorCheckAllocations               ="%(Midl.ErrorCheckAllocations)"
-      ErrorCheckBounds                    ="%(Midl.ErrorCheckBounds)"
-      ErrorCheckEnumRange                 ="%(Midl.ErrorCheckEnumRange)"
-      ErrorCheckRefPointers               ="%(Midl.ErrorCheckRefPointers)"
-      ErrorCheckStubData                  ="%(Midl.ErrorCheckStubData)"
-      GenerateClientFiles                 ="%(Midl.GenerateClientFiles)"
-      GenerateServerFiles                 ="%(Midl.GenerateServerFiles)"
-      GenerateStublessProxies             ="%(Midl.GenerateStublessProxies)"
-      GenerateTypeLibrary                 ="%(Midl.GenerateTypeLibrary)"
-      HeaderFileName                      ="%(Midl.HeaderFileName)"
-      IgnoreStandardIncludePath           ="%(Midl.IgnoreStandardIncludePath)"
-      InterfaceIdentifierFileName         ="%(Midl.InterfaceIdentifierFileName)"
-      LocaleID                            ="%(Midl.LocaleID)"
-      MkTypLibCompatible                  ="%(Midl.MkTypLibCompatible)"
-      MetadataFileName                    ="%(Midl.MetadataFileName)"
-      MinimumTargetSystem                 ="%(Midl.MinimumTargetSystem)"
-      OutputDirectory                     ="$(OutDir)"
-      PrependWithABINamepsace             ="%(Midl.PrependWithABINamepsace)"
-      PreprocessorDefinitions             ="%(Midl.PreprocessorDefinitions)"
-      ProxyFileName                       ="%(Midl.ProxyFileName)"
-      RedirectOutputAndErrors             ="%(Midl.RedirectOutputAndErrors)"
-      ServerStubFile                      ="%(Midl.ServerStubFile)"
-      StructMemberAlignment               ="%(Midl.StructMemberAlignment)"
-      SuppressCompilerWarnings            ="%(Midl.SuppressCompilerWarnings)"
-      SuppressStartupBanner               ="%(Midl.SuppressStartupBanner)"
-      TargetEnvironment                   ="%(Midl.TargetEnvironment)"
-      TypeLibFormat                       ="%(Midl.TypeLibFormat)"
-      TypeLibraryName                     ="%(Midl.TypeLibraryName)"
-      UndefinePreprocessorDefinitions     ="%(Midl.UndefinePreprocessorDefinitions)"
-      UseResponseFile                     ="%(Midl.UseResponseFile)"
-      ValidateAllParameters               ="%(Midl.ValidateAllParameters)"
-      WarnAsError                         ="%(Midl.WarnAsError)"
-      WarningLevel                        ="%(Midl.WarningLevel)"
-
-      TrackerLogDirectory                 ="%(Midl.TrackerLogDirectory)"
-      MinimalRebuildFromTracking          ="%(Midl.MinimalRebuildFromTracking)"
-      ToolArchitecture                    ="$(MidlToolArchitecture)"
-      TrackerFrameworkPath                ="$(MidlTrackerFrameworkPath)"
-      TrackerSdkPath                      ="$(MidlTrackerSdkPath)"
-      TrackedInputFilesToIgnore           ="@(MidlNoDependencies)"
-      TrackedOutputFilesToIgnore          ="@(MidlTrackedOutputFilesToIgnore)"
-      ExcludedInputPaths                  ="%(Midl.ExcludedInputPaths)"
-      TLogReadFiles                       ="@(MIDLTLogReadFiles)"
-      TLogWriteFiles                      ="@(MIDLTLogWriteFiles)"
-      ToolExe                             ="$(MIDLToolExe)"
-      ToolPath                            ="$(MIDLToolPath)"
-      TrackFileAccess                     ="$(TrackFileAccess)"
-      AcceptableNonZeroExitCodes          ="%(Midl.AcceptableNonZeroExitCodes)"
-      YieldDuringToolExecution            ="$(MidlYieldDuringToolExecution)"
-      >
-    </MIDL>
 
     <PropertyGroup>
       <WinMDFileName>$([System.IO.Path]::GetFileNameWithoutExtension('$(IDLFile)')).winmd</WinMDFileName>
