@@ -89,7 +89,12 @@ namespace MIDL
 
         private static async Task MergeHeaderFilesAsync(string projectFile, string generatedFile)
         {
-            string baseFile = Path.GetTempFileName();
+            string projectFileName = Path.GetFileName(projectFile);
+            string baseFile = Path.Combine(Path.GetTempPath(), projectFileName);
+            if (File.Exists(baseFile))
+            {
+                File.Delete(baseFile);
+            }
             StripDiff(baseFile, projectFile, generatedFile);
 
             IModernMergeService mergeService = await GetMergeServiceAsync();
@@ -109,8 +114,6 @@ namespace MIDL
                                                         resultFileTitle: Path.GetFileName(projectFile),
                                                         callbackParam: null,
                                                         onMergeComplete: null);
-
-            File.Delete(baseFile);
         }
 
         private static async Task<IModernMergeService> GetMergeServiceAsync()
