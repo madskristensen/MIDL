@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Build.Evaluation;
 using Microsoft.Build.Execution;
+using Microsoft.Build.Framework;
+using Microsoft.Build.Logging;
 using Project = Community.VisualStudio.Toolkit.Project;
 
 namespace MIDL
@@ -13,6 +16,8 @@ namespace MIDL
     public static class IdlTransformer
     {
         private const string _buildFileName = "_IDL_TRANSFORMER.vcxproj";
+
+        private const string _target = "SpecialVSIXMidl";
 
         public static async Task<ProcessResult> TransformToHeaderAsync(this PhysicalFile idlFile)
         {
@@ -35,9 +40,10 @@ namespace MIDL
 
         private static async Task<ProcessResult> ExecuteBuildAsync(Project project, string idlFileName)
         {
-            string outputPath = Path.Combine(Path.GetTempPath(), $"VSIXIDL\\{project.Name}\\VSIX_Metadata_Folder\\Generated Files\\sources");
+            string outputBasePath = Path.Combine(Path.GetTempPath(), $"VSIXIDL\\{project.Name}\\VSIX_Metadata_Folder");
+            string outputPath = Path.Combine(outputBasePath, "Generated Files\\sources");
             string headerFileName = Path.ChangeExtension(Path.GetFileName(idlFileName), ".h");
-            string headerFile = Path.Combine(outputPath, $"{headerFileName}");
+            string headerFile = Path.Combine(outputPath, headerFileName);
 
             try
             {
@@ -66,25 +72,37 @@ namespace MIDL
                 };
 
                 ProjectCollection projectCollection = new(globalProperty, null, ToolsetDefinitionLocations.Registry | ToolsetDefinitionLocations.ConfigurationFile);
-                BuildParameters buildParamters = new(projectCollection);
+                string buildLogPath = Path.Combine(outputBasePath, "msbuild.log");
+                BuildParameters buildParamters = new(projectCollection)
+                {
+                    Loggers = new List<ILogger> { new FileLogger()
+                        {
+                            Parameters = $"LOGFILE={buildLogPath}",
+                        }
+                    },
+                };
 
                 string buildProjectPath = Path.Combine(projectDir, _buildFileName);
-                BuildRequestData buildRequest = new(buildProjectPath, globalProperty, null, new string[] { "SpecialVSIXMidl" }, null);
+                BuildRequestData buildRequest = new(buildProjectPath, globalProperty, null, new string[] { _target }, null);
 
                 BuildResult result = manager.Build(buildParamters, buildRequest);
 
-                if (!File.Exists(headerFile))
+                if (result.OverallResult == BuildResultCode.Failure)
                 {
-                    return new ProcessResult(false, headerFile, null);
+                    result.ResultsByTarget.TryGetValue(_target, out TargetResult targetResult);
+                    return new ProcessResult(false, headerFile, $"Build failed. Generated header file not found.\n" +
+                        $"OverallResult={result.OverallResult} Exception={result.Exception?.ToString()}\n" +
+                        $"TargetResult.Result={targetResult.ResultCode} TargetException={targetResult.Exception}\n" +
+                        $"If no useful exception is returned, please inspect the build log at {buildLogPath}");
                 }
 
                 RemoveNoise(project, headerFile);
 
-                return new ProcessResult(result.Exception == null, headerFile, result.Exception?.ToString());
+                return new ProcessResult(true, headerFile, null);
             }
             catch (Exception ex)
             {
-                return new ProcessResult(false, headerFile, ex.ToString());
+                return new ProcessResult(false, headerFile, $"Failed to execute build: {ex}");
             }
         }
 
