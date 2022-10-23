@@ -13,12 +13,12 @@
     <IntDir>$(OutDir)</IntDir>
   </PropertyGroup>
 
-  <Target Name="SpecialVSIXMidl"
-          DependsOnTargets="SelectMidl">
+  <Target Name="CompileMidl" BeforeTargets="SpecialVSIXMidl"
+          DependsOnTargets="SelectMidl" Inputs="@(Midl)" Outputs="@(Midl->'$(OutDir)Unmerged\$([System.IO.Path]::GetFileNameWithoutExtension('%(Identity)')).winmd')">
 
     <ItemGroup>
       <DirectoriesToMake Include="$(OutDir)" />
-      <DirectoriesToMake Include="$(OutDir)\Unmerged" />
+      <DirectoriesToMake Include="$(OutDir)Unmerged" />
     </ItemGroup>
 
     <Error Text="You need to specify the path to the vcxproj in the ProjectPath property" Condition="'$(ProjectPath)'==''" />
@@ -143,13 +143,20 @@
       >
     </MIDL>
 
-    <PropertyGroup>
-      <WinMDFileName>$([System.IO.Path]::GetFileNameWithoutExtension('$(IDLFile)')).winmd</WinMDFileName>
-    </PropertyGroup>
-    
-    <Exec Command="$(CppWinRTPath)cppwinrt -overwrite -name $(ProjectName) -prefix -comp &quot;$(OutDir)\Generated Files&quot;\sources -opt -in $(OutDir)\unmerged\$(WinMDFileName) -reference sdk -output &quot;$(OutDir)\Generated Files&quot; -verbose " />
-
   </Target>
 
+  <Target Name="SpecialVSIXMidl">
+
+    <ItemGroup>
+      <MidlName Include="@(Midl)">
+        <WinMDPath>$([System.IO.Path]::GetFileNameWithoutExtension('%(Identity)')).winmd</WinMDPath>
+      </MidlName>
+    </ItemGroup>
+
+    <Message Text="MidlName: @(MidlName->'%(WinMDPath)')" Importance="High"/>
+
+    <Exec Command="$(CppWinRTPath)cppwinrt -overwrite -name $(ProjectName) -prefix -comp &quot;$(OutDir)\Generated Files\sources&quot; -opt @(MidlName->'-in &quot;$(OutDir)Unmerged\%(WinMDPath)&quot;', '&#x20;') -reference sdk -output &quot;$(OutDir)\Generated Files&quot; -verbose " />
+
+  </Target>
 
 </Project>

@@ -89,10 +89,10 @@ namespace MIDL
 
                 if (result.OverallResult == BuildResultCode.Failure)
                 {
-                    result.ResultsByTarget.TryGetValue(_target, out TargetResult targetResult);
+                    result.ResultsByTarget.TryGetValue(_target, out TargetResult? targetResult);
                     return new ProcessResult(false, headerFile, $"Build failed. Generated header file not found.\n" +
                         $"OverallResult={result.OverallResult} Exception={result.Exception?.ToString()}\n" +
-                        $"TargetResult.Result={targetResult.ResultCode} TargetException={targetResult.Exception}\n" +
+                        $"TargetResult.Result={targetResult?.ResultCode} TargetException={targetResult?.Exception}\n" +
                         $"If no useful exception is returned, please inspect the build log at {buildLogPath}");
                 }
 
