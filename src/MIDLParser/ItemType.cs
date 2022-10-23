@@ -4,6 +4,7 @@
     {
         Comment,
         EmptyLine,
+        Text,
         Keyword,
         Type,
         String
