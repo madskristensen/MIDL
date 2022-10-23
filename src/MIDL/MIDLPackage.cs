@@ -2,10 +2,15 @@
 global using Community.VisualStudio.Toolkit;
 global using Microsoft.VisualStudio.Shell;
 global using Task = System.Threading.Tasks.Task;
+using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
 using System.Threading;
+using EnvDTE;
+using EnvDTE80;
+using Microsoft;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
+using MIDL.Commands;
 
 namespace MIDL
 {
