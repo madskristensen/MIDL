@@ -7,7 +7,7 @@ namespace MIDLParser.Test
     [TestClass]
     public class TokenTest
     {
-        private const string _file = @"// Photo.idl
+        private const string _rawFile = @"// Photo.idl
 #include ""NamespaceRedirect.h""
 
 namespace PhotoEditor
@@ -30,10 +30,17 @@ namespace PhotoEditor
     }
 }";
 
+        private static readonly string _canonicalFile = GetCanonicalFile();
+
+        private static string GetCanonicalFile()
+        {
+            return _rawFile.Replace("\r\n", "\n").Replace("\r", "\n").Replace("\n", Environment.NewLine);
+        }
+
         [TestMethod]
         public void ParserTest()
         {
-            var lines = _file.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+            var lines = _canonicalFile.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
             var parser = Document.FromLines(lines);
 
             Assert.AreEqual(ItemType.Comment, parser.Items.First().Type);
@@ -44,7 +51,7 @@ namespace PhotoEditor
         [TestMethod]
         public void ValidationTest()
         {
-            var lines = _file.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+            var lines = _canonicalFile.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
             var parser = Document.FromLines(lines);
 
             Assert.AreEqual(1, parser.Items.ElementAt(16).Errors.Count);
