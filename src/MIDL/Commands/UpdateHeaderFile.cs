@@ -89,8 +89,16 @@ namespace MIDL
 
         private static async Task MergeHeaderFilesAsync(string projectFile, string generatedFile)
         {
-            string baseFile = Path.GetTempFileName();
+            string projectFileName = Path.GetFileName(projectFile);
+            string baseFile = Path.Combine(Path.GetTempPath(), projectFileName);
+            if (File.Exists(baseFile))
+            {
+                File.Delete(baseFile);
+            }
             StripDiff(baseFile, projectFile, generatedFile);
+            string resultFile = Path.Combine(Path.GetTempPath(), 
+                $"{Path.GetFileNameWithoutExtension(projectFile)}_result.{Path.GetExtension(projectFile)}");
+            File.Copy(projectFile, resultFile, true);
 
             IModernMergeService mergeService = await GetMergeServiceAsync();
 
@@ -98,19 +106,23 @@ namespace MIDL
                                                         leftFilePath: projectFile,
                                                         rightFilePath: generatedFile,
                                                         baseFilePath: baseFile,
-                                                        resultFilePath: projectFile,
+                                                        resultFilePath: resultFile,
                                                         leftFileTag: "Local",
                                                         rightFileTag: "Generated",
                                                         baseFileTag: "Base file",
                                                         resultFileTag: "Result",
-                                                        leftFileTitle: Path.GetFileName(projectFile),
+                                                        leftFileTitle: projectFileName,
                                                         rightFileTitle: "from IDL",
-                                                        baseFileTitle: baseFile,
-                                                        resultFileTitle: Path.GetFileName(projectFile),
+                                                        baseFileTitle: "Base",
+                                                        resultFileTitle: projectFileName,
                                                         callbackParam: null,
-                                                        onMergeComplete: null);
-
-            File.Delete(baseFile);
+                                                        onMergeComplete: (r) =>
+                                                        {
+                                                            if (r.MergeAccepted)
+                                                            {
+                                                                File.Copy(resultFile, projectFile, true);
+                                                            }
+                                                        });
         }
 
         private static async Task<IModernMergeService> GetMergeServiceAsync()
