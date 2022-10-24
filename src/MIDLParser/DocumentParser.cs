@@ -1,21 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.Text.RegularExpressions;
 
 namespace MIDLParser
 {
     public partial class Document
     {
-        private static readonly Regex _rxComment = new(@"//.+");
+        private static readonly Regex _rxSingleLineComment = new(@"//.+");
+        private static readonly Regex _rxCommentOpen = new(@"/\*");
+        private static readonly Regex _rxCommentClose = new(@"\*/");
         private static readonly Regex _rxString = new(@"\""[^\""].+\""");
         private static readonly Regex _rxAttribute = new(@"(?<=\[)\w+(?=.*\])");
         private static readonly Regex _rxType = new(@"\b(asm|__asm__|auto|bool|Boolean|_Bool|char|_Complex|double|float|PWSTR|PCWSTR|_Imaginary|int|long|short|VARIANT|BSTR|string|String|Single|Double|Int16|Int32|Int64|UInt8|UInt16|UInt32|UInt64|Char|Char16|Guid|Object)\b|(?<=(namespace|event|enum|runtimeclass)\s*)[\w\.]+");
         private static readonly Regex _rxKeyword = new(@"^(#include|#define)|\b(true|false|signed|typedef|union|unsigned|void|enum|import|VARIANT|BSTR|break|case|overridable|ref|out|const|continue|default|do|else|for|goto|if|_Pragma|return|switch|while|set|get|event|runtimeclass|apicontract|namespace|interface|delegate|static|unsealed)\b");
-
+        private static readonly Regex _rxText = new(@"(\w|\d)+");
+        private static readonly Regex _rxOp = new(@"[~.;,+\-*/()\[\]{}<>=&$!%?:|^\\]");
 
         public bool IsParsing { get; private set; }
+
         public bool IsValid { get; private set; }
+
+        struct PendingCommentItem
+        {
+            public int Start { get; set; }
+
+            public int Line { get; set; }
+
+            public int Column { get; set; }
+        }
+
+        private PendingCommentItem? _pendingComment = null;
 
         public void Parse()
         {
@@ -27,16 +43,30 @@ namespace MIDLParser
             {
                 List<ParseItem> tokens = new();
 
-                foreach (string? line in _lines)
+                for (int line = 0; line < _lines.Length; ++line)
                 {
-                    IEnumerable<ParseItem>? current = ParseLine(start, line);
-
-                    if (current != null)
+                    string lineStr = _lines[line];
+                    for (int column = 0; column < lineStr.Length;)
                     {
-                        tokens.AddRange(current);
+                        // Trim white space
+                        while (column < lineStr.Length && lineStr[column] == ' ')
+                        {
+                            column++;
+                        }
+                        int oldColumn = column;
+                        ParseItem? current = ParseLine(start, line, ref column, lineStr);
+
+                        if (current != null)
+                        {
+                            tokens.Add(current);
+                        }
+                        else if (oldColumn == column)
+                        {
+                            break;
+                        }
                     }
 
-                    start += line.Length;
+                    start += lineStr.Length;
                 }
 
                 Items = tokens.OrderBy(i => i.Start).ToList();
@@ -56,83 +86,109 @@ namespace MIDLParser
             }
         }
 
-        private IEnumerable<ParseItem> ParseLine(int start, string line)
+        private ParseItem? ParseLine(int start, int line, ref int column, string lineStr)
         {
-            string? trimmedLine = line.TrimEnd();
-            List<ParseItem> lineItems = new();
-
-            // Comment
-            if (IsMatch(_rxComment, trimmedLine, out Match matchComment))
+            if (_pendingComment is PendingCommentItem commentItem)
             {
-                lineItems.Add(ToParseItem(matchComment, start, ItemType.Comment)!);
+                // Comment close
+                if (IsMatch(_rxCommentClose, lineStr, ref column, out Match matchCommendClose))
+                {
+                    _pendingComment = null;
+                    string text = FindText(commentItem.Line, commentItem.Column, line, column);
+                    return ToParseItem(text, commentItem.Start, ItemType.Comment);
+                }
+                else
+                {
+                    column += 1;
+                    return null;
+                }
+            }
+
+            // Single line comment
+            if (IsMatch(_rxSingleLineComment, lineStr, ref column, out Match matchComment))
+            {
+                return ToParseItem(matchComment, start, ItemType.Comment)!;
+            }
+
+            // Comment open
+            if (IsMatch(_rxCommentOpen, lineStr, ref column, out Match matchCommentStart))
+            {
+                _pendingComment = new()
+                {
+                    Start = start + matchCommentStart.Index,
+                    Column = column - matchCommentStart.Length,
+                    Line = line,
+                };
+                return null;
             }
 
             // Keywords
-            if (IsMatches(_rxKeyword, trimmedLine, out MatchCollection? matchVar))
+            if (IsMatch(_rxKeyword, lineStr, ref column, out Match matchVar))
             {
-                IEnumerable<ParseItem>? items = ToParseItems(matchVar, start, ItemType.Keyword)!;
-                AddItem(lineItems, items);
+                return ToParseItem(matchVar, start, ItemType.Keyword)!;
             }
 
             // Types
-            if (IsMatches(_rxType, trimmedLine, out MatchCollection? matchType))
+            if (IsMatch(_rxType, lineStr, ref column, out Match matchType))
             {
-                IEnumerable<ParseItem>? items = ToParseItems(matchType, start, ItemType.Type)!;
-                AddItem(lineItems, items);
+                return ToParseItem(matchType, start, ItemType.Type)!;
             }
 
             // Attributes
-            if (IsMatches(_rxAttribute, trimmedLine, out MatchCollection? matchAttr))
+            if (IsMatch(_rxAttribute, lineStr, ref column, out Match? matchAttr))
             {
-                IEnumerable<ParseItem>? items = ToParseItems(matchAttr, start, ItemType.Type)!;
-                AddItem(lineItems, items);
+                return ToParseItem(matchAttr, start, ItemType.Type)!;
             }
 
             // Strings
-            if (IsMatches(_rxString, trimmedLine, out MatchCollection? matchStrings))
+            if (IsMatch(_rxString, lineStr, ref column, out Match matchStrings))
             {
-                IEnumerable<ParseItem>? items = ToParseItems(matchStrings, start, ItemType.String)!;
-                AddItem(lineItems, items);
+                return ToParseItem(matchStrings, start, ItemType.String)!;
             }
 
-            return lineItems;
-        }
-
-        private static void AddItem(List<ParseItem> items, IEnumerable<ParseItem> itemsToAdd)
-        {
-            foreach (ParseItem? item in itemsToAdd)
+            // Op
+            if (IsMatch(_rxOp, lineStr, ref column, out Match _))
             {
-                if (!items.Any(i => i.Contains(item.Start)))
-                {
-                    items.Add(item);
-                }
-
-                ParseItem? comment = items.FirstOrDefault(c => c.Type == ItemType.Comment && item.Contains(c.Start));
-                
-                if (comment != null)
-                {
-                    items.Remove(comment);
-                }
+                return null;
             }
+
+            // Text
+            if (IsMatch(_rxText, lineStr, ref column, out Match _))
+            {
+                return null;
+            }
+            return null;
         }
 
-        public static bool IsMatch(Regex regex, string line, out Match match)
+        private string FindText(int startLine, int startColumn, int endLine, int endColumn)
         {
-            match = regex.Match(line);
-            return match.Success;
+            bool isEndOnSameLine = endLine == startLine;
+            string startLineStr = _lines[startLine];
+            string text = startLineStr.Substring(startColumn, isEndOnSameLine ? endColumn - startColumn : startLineStr.Length - startColumn);
+            for (int line = startLine + 1; line <= endLine; ++line)
+            {
+                // TODO: Detect newline characters in doc
+                text += "\n";
+                string lineStr = _lines[line];
+                text += line == endLine ? lineStr.Substring(0, endColumn) : lineStr;
+            }
+            return text;
         }
 
-        public static bool IsMatches(Regex regex, string line, out MatchCollection matches)
+        public static bool IsMatch(Regex regex, string line, ref int at, out Match match)
         {
-            matches = regex.Matches(line);
-            return matches.Count > 0;
+            match = regex.Match(line, at);
+            bool result = match.Success && match.Index == at;
+            if (result)
+            {
+                at += match.Length;
+            }
+            return result;
         }
 
         private ParseItem ToParseItem(string line, int start, ItemType type)
         {
             ParseItem? item = new(start, line, this, type);
-
-
             return item;
         }
 
@@ -144,19 +200,6 @@ namespace MIDLParser
             }
 
             return ToParseItem(match.Value, start + match.Index, type);
-        }
-
-        private IEnumerable<ParseItem> ToParseItems(MatchCollection matches, int start, ItemType type)
-        {
-            foreach (Match match in matches)
-            {
-                ParseItem? item = ToParseItem(match, start, type);
-
-                if (item != null)
-                {
-                    yield return item;
-                }
-            }
         }
 
         private void ValidateDocument()

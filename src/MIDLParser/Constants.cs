@@ -8,7 +8,8 @@ namespace MIDLParser
 {
     public class Constants
     {
-        public const string CommentChar = "//";
-
+        public const string SingleLineCommentString = "//";
+        public const string CommentOpen = "/*";
+        public const string CommentClose = "*/";
     }
 }
