@@ -27,6 +27,8 @@ namespace MIDL
     internal sealed partial class PackageIds
     {
         public const int MyMenuGroup = 0x0001;
+        public const int FileMenu = 0x0002;
         public const int MyCommand = 0x0100;
+        public const int CopyEntityToClipboard = 0x0101;
     }
 }

@@ -11,6 +11,9 @@
       <Group guid="MIDL" id="MyMenuGroup" priority="0x0010">
         <Parent guid="VSMainMenu" id="ItemNode"/>
       </Group>
+      <Group guid="MIDL" id="FileMenu" priority="0x0010">
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_CODEWIN"/>
+      </Group>
     </Groups>
 
     <!--This section defines the elements the user can interact with, like a menu command or a button
@@ -26,11 +29,27 @@
           <LocCanonicalName>.MIDL.UpdateHeaderFile</LocCanonicalName>
         </Strings>
       </Button>
+      <Button guid="MIDL" id="CopyEntityToClipboard" priority="0x0100" type="Button">
+        <Icon guid="ImageCatalogGuid" id="Interface" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Copy Entity To Clipboard</ButtonText>
+          <LocCanonicalName>.MIDL.CopyEntityToClipboard</LocCanonicalName>
+        </Strings>
+      </Button>
     </Buttons>
   </Commands>
 
+  <CommandPlacements>
+    <CommandPlacement guid="MIDL" id="CopyEntityToClipboard" priority="0x0100">
+      <Parent guid="MIDL" id="FileMenu"/>
+    </CommandPlacement>
+  </CommandPlacements>
+
   <VisibilityConstraints>
     <VisibilityItem guid="MIDL" id="MyCommand" context="IdlFileSelected" />
+    <VisibilityItem guid="MIDL" id="CopyEntityToClipboard" context="IdlFileSelected" />
   </VisibilityConstraints>
 
   <Symbols>
@@ -38,8 +57,14 @@
     <GuidSymbol name="MidlEditorFactory" value="{f7d6e464-2c5c-4e02-bc1b-8fe2cde367a3}"/>
     
     <GuidSymbol name="MIDL" value="{be7365f7-d75c-4cfe-94b5-e28bf78459b5}">
+      <!-- Solution explorer context menu -->
       <IDSymbol name="MyMenuGroup" value="0x0001" />
+      
+      <!-- Document context menu -->
+      <IDSymbol name="FileMenu" value="0x0002"/>
+
       <IDSymbol name="MyCommand" value="0x0100" />
+      <IDSymbol name="CopyEntityToClipboard" value="0x0101" />
     </GuidSymbol>
   </Symbols>
 </CommandTable>
