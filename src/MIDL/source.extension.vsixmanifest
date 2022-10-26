@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
-    <Metadata>
+  <Metadata>
         <Identity Id="MIDL.148cb49f-0d60-482a-a9ca-800f2b6c579b" Version="1.0.9991" Language="en-US" Publisher="Mads Kristensen" />
         <DisplayName>WinRT Tools for C++</DisplayName>
         <Description xml:space="preserve">Provides language support for IDL 3 and header generation based on WinMD transformations.</Description>
@@ -15,7 +15,10 @@
         <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0, 18.0)">
             <ProductArchitecture>amd64</ProductArchitecture>
         </InstallationTarget>
-    </Installation>
+        <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0, 18.0)">
+            <ProductArchitecture>arm64</ProductArchitecture>
+        </InstallationTarget>
+    </Installation> 
     <Prerequisites>
         <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[17.0,)" DisplayName="Visual Studio core editor" />
         <Prerequisite Id="Microsoft.VisualStudio.ComponentGroup.UWP.Support" Version="[17.0,)" DisplayName="Universal Windows Platform tools" />
