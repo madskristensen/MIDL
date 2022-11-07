@@ -53,7 +53,7 @@ namespace PhotoEditor
             Assert.AreEqual(ItemType.Comment, parser.Items[2].Type);
             Assert.AreEqual(ItemType.Keyword, parser.Items[3].Type);
             Assert.AreEqual(ItemType.String, parser.Items[4].Type);
-            Assert.AreEqual(27, parser.Items.Count);
+            Assert.AreEqual(26, parser.Items.Count);
         }
 
         [TestMethod]
@@ -62,7 +62,7 @@ namespace PhotoEditor
             var lines = _canonicalFile.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
             var parser = Document.FromLines(lines);
 
-            Assert.AreEqual(1, parser.Items.ElementAt(18).Errors.Count);
+            Assert.AreEqual(1, parser.Items.ElementAt(17).Errors.Count);
         }
     }
 }
