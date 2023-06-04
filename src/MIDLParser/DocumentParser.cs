@@ -13,8 +13,9 @@ namespace MIDLParser
         private static readonly Regex _rxCommentClose = new(@"\*/");
         private static readonly Regex _rxString = new(@"\""[^\""].+\""");
         private static readonly Regex _rxAttribute = new(@"(?<=\[)\w+(?=.*\])");
+        private static readonly Regex _rxPreprocessorDirective = new (@"^(#define|#elif|#else|#endif|#error|#if(def|ndef|)|#import|#include|#line|#pragma|#undef|#using)(?=\s+|$)");
         private static readonly Regex _rxType = new(@"\b(asm|__asm__|auto|bool|Boolean|_Bool|char|_Complex|double|float|PWSTR|PCWSTR|_Imaginary|int|long|short|VARIANT|BSTR|string|String|Single|Double|Int16|Int32|Int64|UInt8|UInt16|UInt32|UInt64|Char|Char16|Guid|Object)\b|(?<=(event|enum|struct|attribute|runtimeclass|interface)\s*)[\w\.]+");
-        private static readonly Regex _rxKeyword = new(@"^(#include|#define)|\b(true|false|signed|typedef|union|unsigned|void|enum|struct|import|VARIANT|BSTR|break|case|overridable|ref|out|const|continue|default|do|else|for|goto|if|_Pragma|return|switch|while|set|get|event|attribute|requires|protected|runtimeclass|apicontract|namespace|interface|delegate|static|unsealed)\b");
+        private static readonly Regex _rxKeyword = new(@"\b(true|false|signed|typedef|union|unsigned|void|enum|struct|import|VARIANT|BSTR|break|case|overridable|ref|out|const|continue|default|do|else|for|goto|if|_Pragma|return|switch|while|set|get|event|attribute|requires|protected|runtimeclass|apicontract|namespace|interface|delegate|static|unsealed)\b");
         private static readonly Regex _rxText = new(@"(\w|\d)+");
         private static readonly Regex _rxOp = new(@"[~.;,+\-*/()\[\]{}<>=&$!%?:|^\\]");
 
@@ -122,6 +123,12 @@ namespace MIDLParser
                 return null;
             }
 
+            // Preprocessor directives
+            if (IsMatch(_rxPreprocessorDirective, lineStr, ref column, out Match matchDirective))
+            {
+                return ToParseItem(matchDirective, start, ItemType.PreprocessorDirective);
+            }
+
             // Keywords
             if (IsMatch(_rxKeyword, lineStr, ref column, out Match matchVar))
             {
@@ -205,11 +212,17 @@ namespace MIDLParser
         private void ValidateDocument()
         {
             IsValid = true;
-            foreach (ParseItem item in Items.Where(i => i.Type == ItemType.Type))
+            foreach (ParseItem item in Items)
             {
-                if (_convertTypes.ContainsKey(item.Text))
+                if (item.Type == ItemType.Type && _convertTypes.ContainsKey(item.Text))
                 {
                     item.Errors.Add(Errors.PL001.WithFormat(item.Text, _convertTypes[item.Text]));
+                    IsValid = false;
+                }
+
+                if (item.Type == ItemType.PreprocessorDirective && (item.Text == "#import" || item.Text == "#using"))
+                {
+                    item.Errors.Add(Errors.C2773);
                     IsValid = false;
                 }
             }
@@ -231,6 +244,7 @@ namespace MIDLParser
         {
             public static Error PL001 { get; } = new("IDL001", "Use {1} instead of {0}.", ErrorCategory.Error);
             public static Error PL002 { get; } = new("PL002", "\"{0}\" is not a valid absolute URI", ErrorCategory.Warning);
+            public static Error C2773 { get; } = new("C2773", "#import and #using available only in C++ compiler", ErrorCategory.Error);
         }
 
 
