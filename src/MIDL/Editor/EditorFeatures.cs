@@ -19,6 +19,7 @@ namespace MIDL
         public override Dictionary<object, string> ClassificationMap { get; } = new()
         {
             { ItemType.Comment, PredefinedClassificationTypeNames.Comment },
+            { ItemType.PreprocessorDirective, PredefinedClassificationTypeNames.PreprocessorKeyword },
             { ItemType.Keyword, PredefinedClassificationTypeNames.Keyword },
             { ItemType.String, PredefinedClassificationTypeNames.String },
             { ItemType.Type, PredefinedClassificationTypeNames.SymbolDefinition },

@@ -51,8 +51,9 @@ namespace PhotoEditor
             Assert.AreEqual(ItemType.Comment, parser.Items.First().Type);
             Assert.AreEqual(ItemType.Comment, parser.Items[1].Type);
             Assert.AreEqual(ItemType.Comment, parser.Items[2].Type);
-            Assert.AreEqual(ItemType.Keyword, parser.Items[3].Type);
+            Assert.AreEqual(ItemType.PreprocessorDirective, parser.Items[3].Type);
             Assert.AreEqual(ItemType.String, parser.Items[4].Type);
+            Assert.AreEqual(ItemType.Keyword, parser.Items[5].Type);
             Assert.AreEqual(26, parser.Items.Count);
         }
 

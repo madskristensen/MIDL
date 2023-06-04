@@ -5,6 +5,7 @@
         Comment,
         EmptyLine,
         Text,
+        PreprocessorDirective,
         Keyword,
         Type,
         String
