@@ -128,7 +128,7 @@ namespace MIDLParser
             {
                 return ToParseItem(matchDirective, start, ItemType.PreprocessorDirective);
             }
-
+            
             // Keywords
             if (IsMatch(_rxKeyword, lineStr, ref column, out Match matchVar))
             {
@@ -246,7 +246,6 @@ namespace MIDLParser
             public static Error PL002 { get; } = new("PL002", "\"{0}\" is not a valid absolute URI", ErrorCategory.Warning);
             public static Error C2773 { get; } = new("C2773", "#import and #using available only in C++ compiler", ErrorCategory.Error);
         }
-
 
         public event EventHandler? Parsed;
     }
